@@ -1,0 +1,54 @@
+{
+  "name": "fondbot/lumen",
+  "description": "Laravel lumen integration with FondBot",
+  "type": "library",
+  "keywords": [
+    "fondbot",
+    "bot",
+    "bots",
+    "chatbots",
+    "laravel",
+    "lumen",
+    "telegram",
+    "facebook messenger",
+    "vk"
+  ],
+  "homepage": "https://fondbot.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Denis Golubkov",
+      "email": "golubkovden@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "laravel/lumen-framework": "^5.4",
+    "fondbot/fondbot": "self.version"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "^1.6",
+    "mockery/mockery": "^0.9.9",
+    "phpunit/phpunit": "^5",
+    "sllh/php-cs-fixer-styleci-bridge": "^2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "FondBot\\Frameworks\\Lumen\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --stop-on-failure --no-coverage",
+    "cs": "php-cs-fixer fix --allow-risky=yes"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
