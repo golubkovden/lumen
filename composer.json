@@ -23,8 +23,12 @@
   ],
   "require": {
     "php": ">=7.1",
-    "laravel/lumen-framework": "^5.4",
-    "fondbot/fondbot": "self.version"
+    "fondbot/fondbot": "dev-master",
+    "illuminate/container": "^5.4",
+    "illuminate/contracts": "^5.4",
+    "illuminate/http": "^5.4",
+    "illuminate/routing": "^5.4",
+    "illuminate/support": "^5.4"
   },
   "require-dev": {
     "fzaninotto/faker": "^1.6",
