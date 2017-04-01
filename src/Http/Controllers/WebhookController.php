@@ -21,8 +21,6 @@ class WebhookController extends Controller
     ) {
         $channel = $channelManager->create($channel);
 
-        dd($channelManager);
-
         $bot = $factory->create(
             $container,
             $channel,
