@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace FondBot\Frameworks\Lumen;
 
-use FondBot\Contracts\Container\Container as FondBotContract;
-use Illuminate\Container\Container as BaseContainer;
+use FondBot\Contracts\Container as FondBotContract;
 use Illuminate\Contracts\Container\Container as LumenContract;
 
 class Container implements FondBotContract
@@ -26,7 +25,7 @@ class Container implements FondBotContract
     public static function instance(): FondBotContract
     {
         if (static::$instance === null) {
-            return new static(BaseContainer::getInstance());
+            return new static(app(LumenContract::class));
         }
 
         return static::$instance;

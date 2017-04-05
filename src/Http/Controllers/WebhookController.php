@@ -6,11 +6,10 @@ namespace FondBot\Frameworks\Lumen\Http\Controllers;
 
 use FondBot\BotFactory;
 use FondBot\Channels\ChannelManager;
-use FondBot\Contracts\Container\Container;
+use FondBot\Contracts\Container;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 
-class WebhookController extends Controller
+class WebhookController
 {
     public function handle(
         Container $container,

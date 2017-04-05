@@ -5,34 +5,38 @@ declare(strict_types=1);
 namespace FondBot\Frameworks\Lumen;
 
 use FondBot\Channels\ChannelManager;
-use FondBot\Channels\DriverManager;
-use FondBot\Channels\Facebook\FacebookDriver;
-use FondBot\Channels\Telegram\TelegramDriver;
-use FondBot\Channels\VkCommunity\VkCommunityDriver;
-use FondBot\Contracts\Container\Container as ContainerContract;
+use FondBot\Conversation\FallbackIntent;
+use FondBot\Conversation\IntentManager;
+use FondBot\Drivers\DriverManager;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
+/**
+ * Class ServiceProvider
+ *
+ * @property \Laravel\Lumen\Application $app
+ *
+ * @package FondBot\Frameworks\Lumen
+ */
 class ServiceProvider extends BaseServiceProvider
 {
-    protected $drivers = [
-        'facebook' => FacebookDriver::class,
-        'telegram' => TelegramDriver::class,
-        'vk-communities' => VkCommunityDriver::class,
-    ];
-
     public function register()
     {
-        $this->app->bind(ContainerContract::class, Container::class);
-        $this->app->singleton(ChannelManager::class, ChannelManager::class);
+        $this->app->bind(\FondBot\Contracts\Cache::class, Cache::class);
+        $this->app->bind(\FondBot\Contracts\Container::class, Container::class);
+        $this->app->bind(\FondBot\Contracts\Filesystem::class, Filesystem::class);
+
         $this->app->singleton(DriverManager::class, DriverManager::class);
+        $this->app->singleton(ChannelManager::class, ChannelManager::class);
+        $this->app->singleton(IntentManager::class, IntentManager::class);
     }
 
     public function boot()
     {
         $this->loadConfig();
         $this->loadRoutes();
-        $this->loadChannels();
         $this->loadDrivers();
+        $this->loadChannels();
+        $this->loadIntents();
     }
 
     protected function loadConfig()
@@ -48,7 +52,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->group([
             'prefix' => 'fondbot',
             'namespace' => 'FondBot\Frameworks\Lumen\Http\Controllers',
-//            'middleware' => ['bindings'],
         ], function ($app) {
             $app->addRoute(
                 ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -58,22 +61,37 @@ class ServiceProvider extends BaseServiceProvider
         });
     }
 
+    protected function loadDrivers()
+    {
+        $manager = $this->app->make(DriverManager::class);
+        $drivers = $this->app['config']->get('fondbot.drivers', []);
+
+        foreach ($drivers as $alias => $class) {
+            $manager->add($alias, app($class));
+        }
+    }
+
     protected function loadChannels()
     {
         $manager = $this->app->make(ChannelManager::class);
-        $channels = $this->app->make('config')->get("fondbot.channels", []);
+        $channels = $this->app['config']->get('fondbot.channels', []);
 
         foreach ($channels as $name => $parameters) {
             $manager->add($name, $parameters);
         }
     }
 
-    protected function loadDrivers()
+    protected function loadIntents()
     {
-        $manager = $this->app->make(DriverManager::class);
+        $manager = $this->app->make(IntentManager::class);
+        $intents = $this->app->app['config']->get('fondbot.intents', []);
 
-        foreach ($this->drivers as $alias => $class) {
-            $manager->add($alias, $this->app->make($class));
+        foreach ($intents as $intent) {
+            $manager->add(app($intent));
         }
+
+        $manager->setFallbackIntent(app(
+            $this->app['config']->get('fondbot.fallback_intent', FallbackIntent::class)
+        ));
     }
 }

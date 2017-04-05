@@ -23,11 +23,11 @@
   ],
   "require": {
     "php": ">=7.1",
-    "fondbot/fondbot": "dev-master",
+    "fondbot/fondbot": "^1.0",
     "illuminate/container": "^5.4",
     "illuminate/contracts": "^5.4",
+    "illuminate/filesystem": "^5.4",
     "illuminate/http": "^5.4",
-    "illuminate/routing": "^5.4",
     "illuminate/support": "^5.4"
   },
   "require-dev": {
