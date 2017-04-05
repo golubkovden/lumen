@@ -8,6 +8,7 @@ use FondBot\Channels\ChannelManager;
 use FondBot\Conversation\FallbackIntent;
 use FondBot\Conversation\IntentManager;
 use FondBot\Drivers\DriverManager;
+use FondBot\Frameworks\Lumen\Console;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 /**
@@ -37,6 +38,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadDrivers();
         $this->loadChannels();
         $this->loadIntents();
+        $this->loadConsole();
     }
 
     protected function loadConfig()
@@ -93,5 +95,15 @@ class ServiceProvider extends BaseServiceProvider
         $manager->setFallbackIntent(app(
             $this->app['config']->get('fondbot.fallback_intent', FallbackIntent::class)
         ));
+    }
+
+    protected function loadConsole()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\MakeIntent::class,
+                Console\MakeInteraction::class,
+            ]);
+        }
     }
 }
